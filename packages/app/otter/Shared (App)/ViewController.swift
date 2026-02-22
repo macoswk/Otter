@@ -43,6 +43,21 @@ class ViewController: PlatformViewController, WKNavigationDelegate, WKScriptMess
 
         // Load the main HTML file from the app bundle
         self.webView.loadFileURL(Bundle.main.url(forResource: "Main", withExtension: "html")!, allowingReadAccessTo: Bundle.main.resourceURL!)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleSaveBookmark(_:)), name: .saveBookmark, object: nil)
+    }
+
+    @objc private func handleSaveBookmark(_ notification: Notification) {
+        let base = "https://otter.zander.wtf/new/bookmark?bookmarklet=true"
+        if let urlString = notification.userInfo?["url"] as? String,
+           let encoded = urlString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) {
+            let fullURL = base + "&url=" + encoded
+            if let url = URL(string: fullURL) {
+                webView.load(URLRequest(url: url))
+            }
+        } else if let url = URL(string: base) {
+            webView.load(URLRequest(url: url))
+        }
     }
 
     /// Called when the web view finishes loading a page

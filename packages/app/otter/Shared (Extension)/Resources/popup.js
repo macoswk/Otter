@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const iframe = document.getElementById('otter-bookmark')
     if (!iframe) return
 
-    const base = 'https://otter3.zander.wtf/new/bookmark?bookmarklet=true&url='
+    const base = 'https://otter.zander.wtf/new/bookmark?bookmarklet=true&url='
     const encoded = encodeURIComponent(currentUrl)
     iframe.src = base + encoded
   } catch (error) {

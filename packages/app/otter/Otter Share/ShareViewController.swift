@@ -47,7 +47,7 @@ class ShareViewController: UIViewController {
                 self?.close()
                 return
             }
-            let base = "https://otter3.zander.wtf/new/bookmark?bookmarklet=true&url="
+            let base = "https://otter.zander.wtf/new/bookmark?bookmarklet=true&url="
             let encoded = url.absoluteString.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
             if let bookmarkURL = URL(string: base + encoded) {
                 self.webView.load(URLRequest(url: bookmarkURL))

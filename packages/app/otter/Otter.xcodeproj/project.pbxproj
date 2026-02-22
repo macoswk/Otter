@@ -75,6 +75,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"/Localized: Resources/Main.html",
+				AppIntents.swift,
 				Assets.xcassets,
 				Resources/Script.js,
 				Resources/Style.css,
@@ -100,6 +101,7 @@
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"/Localized: Resources/Main.html",
+				AppIntents.swift,
 				Assets.xcassets,
 				Resources/Script.js,
 				Resources/Style.css,
@@ -186,8 +188,18 @@
 		};
 		CE0011D32E9702DC00D4FB99 /* macOS (App) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				CE0012302E9702DC00D4FB99 /* Exceptions for "macOS (App)" folder in "Otter (macOS)" target */,
+			);
 			path = "macOS (App)";
 			sourceTree = "<group>";
+		};
+		CE0012302E9702DC00D4FB99 /* Exceptions for "macOS (App)" folder in "Otter (macOS)" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = CE0011D12E9702DC00D4FB99 /* Otter (macOS) */;
 		};
 		CE0011E12E9702DC00D4FB99 /* iOS (Extension) */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -786,6 +798,7 @@
 				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Otter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
@@ -838,6 +851,7 @@
 				ENABLE_RESOURCE_ACCESS_USB = NO;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "macOS (App)/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = Otter;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSMainStoryboardFile = Main;
