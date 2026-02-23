@@ -27,7 +27,17 @@
   </p>
 </div>
 
-## Installing this extension
+---
+
+## ⚠️ Deprecated — use [`packages/web-extension`](../web-extension) instead
+
+This is the **legacy Chrome-only** extension. It has been superseded by the [`web-extension`](../web-extension) package, which supports both **Chrome and Firefox**.
+
+**No new features or bug fixes will be made here.** Please migrate to `packages/web-extension`.
+
+---
+
+## Installing this extension (legacy)
 
 1. Download and unzip this directory
 2. Install npm dependencies
@@ -35,14 +45,6 @@
 4. Go to `chrome://extensions/`.
 5. Click "Load Unpacked" and select the `build` directory in this repo.
 6. The extension should show up in your browser 🎉
-
-## Contribution
-
-Suggestions and pull requests are welcomed!.
-
----
-
-This project was bootstrapped with [Chrome Extension CLI](https://github.com/dutiyesh/chrome-extension-cli)
 
 ## License
 

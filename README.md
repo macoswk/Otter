@@ -6,7 +6,7 @@
         height="90"
       /><br/>Otter</h1>
 
-> Otter is a self-hosted bookmark manager made with React and [Supabase](https://supabase.com) and hosted on [Cloudflare](https://cloudflare.com)
+> Otter is a self-hosted bookmark manager and media tracker built with React, [Supabase](https://supabase.com), and [Cloudflare Workers](https://workers.cloudflare.com)
 
   <p>
     <a
@@ -28,19 +28,24 @@
 
   <p>
     <a href="#features">Features</a> •
+    <a href="#packages">Packages</a> •
     <a href="#getting-started">Getting started</a> •
-    <a href="#docs">Docs</a> •
-    <a href="#otter-ecosystem">Ecosystem</a>
+    <a href="#tech-stack">Tech stack</a>
   </p>
 </div>
 
 ## Features
 
-- Private bookmarking app with search, tagging and filtering
+- Private bookmarking app with search, tagging, collections, and filtering
+- Starred items and public/private visibility per bookmark
 - Dark/light colour modes
-- Mastodon integration - backup of your own toots as well as your favourite toots
-- Raycast extension to search your bookmarks, view recent bookmarks and create new ones
-- Chrome extension for easy bookmarking
+- **Media tracking** — kanban-style board for tracking movies, TV shows, games, and more
+- **AI-powered** title and description rewriting via Cloudflare Workers AI
+- RSS feed parsing and URL scraping
+- Mastodon integration — backup your own toots and favourite toots
+- Cross-browser web extension (Chrome & Firefox)
+- Raycast extension to search, view, and create bookmarks
+- Native macOS/iOS app
 - Bookmarklet
 
 ### Screenshots
@@ -50,22 +55,42 @@
 | New bookmark <br/> <img src="https://raw.githubusercontent.com/mrmartineau/Otter/main/screens/add-new.png?raw=true" width="400" />                     | Search <br/> <img src="https://raw.githubusercontent.com/mrmartineau/Otter/main/screens/search.png?raw=true" width="400" />                |
 | Feed (showing tags sidebar) <br/> <img src="https://raw.githubusercontent.com/mrmartineau/Otter/main/screens/tags-sidebar.png?raw=true" width="400" /> | Toots feed <br/> <img src="https://raw.githubusercontent.com/mrmartineau/Otter/main/screens/toots.png?raw=true" width="400" />             |
 
+## Packages
+
+This is a pnpm monorepo containing the following packages:
+
+| Package | Description |
+| --- | --- |
+| [`packages/web`](packages/web) | Web app and Hono API on Cloudflare Workers |
+| [`packages/app`](packages/app) | Native macOS/iOS app |
+| [`packages/web-extension`](packages/web-extension) | Cross-browser extension (Chrome & Firefox) |
+| [`packages/raycast-extension`](packages/raycast-extension) | [Raycast](https://www.raycast.com/mrmartineau/otter) extension |
+| [`packages/chrome-extension`](packages/chrome-extension) | Legacy Chrome extension (superseded by `web-extension`) |
+
 ## Getting started
 
 ### Prerequisites
 
-- [pnpm](https://pnpm.io) - install with `npm i -g pnpm`
-- [Supabase](https://supabase.com) account and the [Supabase CLI](https://supabase.com/docs/reference/cli/introduction) - install with `npm i -g supabase`
-- [Cloudflare](https://cloudflare.com) account (optional) - used for the page scraper and Mastodon to Supabase worker
+- [pnpm](https://pnpm.io) v10+ — install with `corepack enable && corepack prepare pnpm@latest --activate`
+- [Supabase](https://supabase.com) account and the [Supabase CLI](https://supabase.com/docs/reference/cli/introduction)
+- [Cloudflare](https://cloudflare.com) account — used for hosting, Workers AI, and the API
 
-## Otter ecosystem
+For a full walkthrough — including Supabase database setup, Cloudflare configuration, and deployment — see the **[Setup Instructions](docs/setup-instructions.md)**.
 
-I use various other tools to make Otter even better:
+### Quick start
 
-- [Raycast extension](https://www.raycast.com/mrmartineau/otter) (on the Raycast extension store)
-- [Chrome extension](https://github.com/mrmartineau/otter-extension) (not currently on the Chrome webstore)
-- [Apple Shortcut](https://github.com/mrmartineau/Otter/blob/main/public/Add%20to%20Otter.shortcut) - download this shortcut and update your Otter instance URL within it. Then you can add it to your iOS share sheet and quickly add new bookmarks to Otter
-- [Mastodon to Supabase Cloudflare worker](https://github.com/mrmartineau/mastodon-to-supabase) used to backup my Mastodon toots to Supabase
+```sh
+pnpm install
+pnpm web:dev
+```
+
+## Tech stack
+
+- **Frontend:** React 19, TanStack Router, React Query, Tailwind CSS v4
+- **API:** [Hono](https://hono.dev) on Cloudflare Workers with AI bindings
+- **Database:** [Supabase](https://supabase.com) (Postgres)
+- **Hosting:** [Cloudflare](https://cloudflare.com)
+- **Tooling:** pnpm workspaces, [Biome](https://biomejs.dev) (formatting & linting), Vite
 
 ## License
 
