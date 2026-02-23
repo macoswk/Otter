@@ -51,7 +51,7 @@ function Index() {
       <article>
         <Paragraph className="mt-m">
           This is an instance of{' '}
-          <Link variant="accent" href="https://github.com/mrmartineau/Otter-3">
+          <Link variant="accent" href="https://github.com/mrmartineau/Otter">
             Otter
           </Link>{' '}
           by{' '}
@@ -70,7 +70,7 @@ function Index() {
         </Paragraph>
         <Paragraph>
           If you want to create your own instance, find out more at{' '}
-          <Link variant="accent" href="https://github.com/mrmartineau/Otter-3">
+          <Link variant="accent" href="https://github.com/mrmartineau/Otter">
             the project home page
           </Link>
           .
