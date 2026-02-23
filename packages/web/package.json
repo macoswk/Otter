@@ -93,7 +93,7 @@
   "scripts": {
     "build": "tsc -b && vite build",
     "cf-typegen": "wrangler types",
-    "deploy": "pnpm run build && wrangler deploy --config dist/otter_web/wrangler.json",
+    "deploy": "pnpm run build && wrangler deploy",
     "dev": "vite --port 5678",
     "preview": "pnpm run build && vite preview",
     "supabase:types:app": "npx supabase gen types typescript --project-id \"ffpbylcvwtyozyrplqic\" > src/types/supabase.ts",
