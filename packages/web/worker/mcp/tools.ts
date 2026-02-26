@@ -1,5 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { TidyURL } from 'tidy-url'
+import type { BookmarkType } from '@/types/db'
 import type { Database } from '@/types/supabase'
 import { getBookmarks } from '@/utils/fetching/bookmarks'
 import { getDbMetadata } from '@/utils/fetching/meta'
@@ -271,7 +272,7 @@ const randomBookmark: McpTool = {
       .select('*', { count: 'exact', head: true })
       .eq('user', ctx.userId)
       .eq('status', 'active')
-    if (args.type) countQuery = countQuery.eq('type', args.type as string)
+    if (args.type) countQuery = countQuery.eq('type', args.type as BookmarkType)
     if (args.tag) countQuery = countQuery.filter('tags', 'cs', `{${args.tag}}`)
 
     const { count, error: countError } = await countQuery
@@ -295,7 +296,7 @@ const randomBookmark: McpTool = {
         .select('*')
         .eq('user', ctx.userId)
         .eq('status', 'active')
-      if (args.type) query = query.eq('type', args.type as string)
+      if (args.type) query = query.eq('type', args.type as BookmarkType)
       if (args.tag) query = query.filter('tags', 'cs', `{${args.tag}}`)
       const { data } = await query
         .order('created_at', { ascending: false })
@@ -408,7 +409,7 @@ const createBookmark: McpTool = {
 
     const { data, error } = await ctx.client
       .from('bookmarks')
-      .insert([insertData])
+      .insert(insertData as Database['public']['Tables']['bookmarks']['Insert'])
       .select()
 
     if (error) return toolError(`Create failed: ${error.message}`)

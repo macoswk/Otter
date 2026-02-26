@@ -59,8 +59,8 @@ export const jsonRpcSuccess = (
   id: string | number | null,
   result: unknown,
 ): JsonRpcResponse => ({
-  jsonrpc: '2.0',
   id,
+  jsonrpc: '2.0',
   result,
 })
 
@@ -71,18 +71,18 @@ export const jsonRpcError = (
   message: string,
   data?: unknown,
 ): JsonRpcResponse => ({
-  jsonrpc: '2.0',
-  id,
   error: { code, message, ...(data !== undefined && { data }) },
+  id,
+  jsonrpc: '2.0',
 })
 
 // Helper to create a successful tool result
 export const toolResult = (text: string): CallToolResult => ({
-  content: [{ type: 'text', text }],
+  content: [{ text, type: 'text' }],
 })
 
 // Helper to create an error tool result
 export const toolError = (text: string): CallToolResult => ({
-  content: [{ type: 'text', text }],
+  content: [{ text, type: 'text' }],
   isError: true,
 })

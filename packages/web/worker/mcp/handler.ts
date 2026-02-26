@@ -69,7 +69,6 @@ export const handleMcpPost = async (c: Context) => {
   }
 
   // Authenticate
-  // @ts-expect-error - createAuthenticatedClient returns AuthenticatedClient | Response
   const authResult = await createAuthenticatedClient(c.req)
   if (authResult instanceof Response) {
     return authResult
@@ -122,27 +121,6 @@ export const handleMcpPost = async (c: Context) => {
 }
 
 // --- Internal helpers ---
-
-interface ProcessContext {
-  client: ReturnType<typeof createAuthenticatedClient> extends Promise<infer T>
-    ? T extends Response
-      ? never
-      : T
-    : never
-  userId: string
-}
-
-// Narrow the type properly
-interface AuthedContext {
-  client: Awaited<ReturnType<typeof createAuthenticatedClient>> extends infer T
-    ? T extends Response
-      ? never
-      : T extends { client: infer C }
-        ? C
-        : never
-    : never
-  userId: string
-}
 
 async function processMessage(
   msg: JsonRpcRequest,
@@ -250,7 +228,7 @@ class JsonRpcException extends Error {
   }
 }
 
-function jsonResponse(c: Context, data: JsonRpcResponse) {
+function jsonResponse(_c: Context, data: JsonRpcResponse) {
   return new Response(JSON.stringify(data), {
     headers: JSON_HEADERS,
     status: 200,
