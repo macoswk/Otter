@@ -2,11 +2,13 @@ import {
   BookmarkSimpleIcon,
   BrainIcon,
   BrowserIcon,
+  DeviceMobileIcon,
   FilmStripIcon,
   GlobeIcon,
   LockIcon,
   MagnifyingGlassIcon,
   MoonStarsIcon,
+  PlugIcon,
   RssIcon,
   TagIcon,
   UserCircleIcon,
@@ -65,14 +67,25 @@ const features = [
   },
   {
     description:
-      'Web extension, Raycast extension, native macOS/iOS app, and bookmarklet.',
+      'Native iOS and macOS app with share extension for quickly saving bookmarks.',
+    icon: DeviceMobileIcon,
+    title: 'Native iOS App',
+  },
+  {
+    description:
+      'Browser extensions for Chrome and Firefox, Raycast extension, and bookmarklet.',
     icon: BrowserIcon,
-    title: 'Cross-Platform',
+    title: 'Extensions',
   },
   {
     description: 'Automatic colour mode that follows your system preference.',
     icon: MoonStarsIcon,
     title: 'Dark & Light Mode',
+  },
+  {
+    description: 'Integrate with AI assistants via the Model Context Protocol.',
+    icon: PlugIcon,
+    title: 'MCP Server',
   },
   {
     description:
