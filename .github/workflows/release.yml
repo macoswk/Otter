@@ -1,0 +1,36 @@
+name: Release
+
+on:
+  workflow_dispatch:
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release:
+    name: GitHub Release
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v6
+        with:
+          version: latest
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 'lts/*'
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - name: Release packages
+        run: |
+          pnpm --filter @mrmartineau/otter-web \
+               --filter @mrmartineau/otter-chrome-extension \
+               --filter @mrmartineau/otter-web-extension \
+               exec semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
