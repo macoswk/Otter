@@ -1,3 +1,10 @@
+# [@mrmartineau/otter-web-v1.0.1](https://github.com/mrmartineau/Otter/compare/@mrmartineau/otter-web-v1.0.0...@mrmartineau/otter-web-v1.0.1) (2026-05-07)
+
+
+### Bug Fixes
+
+* **web:** classify endpoint and update AI model ([88375c0](https://github.com/mrmartineau/Otter/commit/88375c0e22ba7a2fe3b63939c87e766b6181f718))
+
 # @mrmartineau/otter-web-v1.0.0 (2026-05-06)
 
 
