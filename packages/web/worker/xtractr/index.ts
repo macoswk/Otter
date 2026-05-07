@@ -71,7 +71,7 @@ export async function xtract(targetUrl: string): Promise<XtractResponse> {
 
   const computedPageType = detectPageType(
     finalUrl,
-    Boolean(result?.author),
+    Boolean(result?.author) && (result?.wordCount ?? 0) >= 250,
     result?.schemaOrgData,
     result?.metaTags,
   )

@@ -94,50 +94,41 @@ export const classifyBookmark = async ({
     },
   ]
 
-  const response = (await context.env.AI.run(AI_MODEL, {
+  const { response } = (await context.env.AI.run(AI_MODEL, {
     messages,
-  })) as { response: string }
-
-  try {
-    const text = response.response.trim()
-    // Extract JSON from the response (handle potential markdown code blocks)
-    const jsonMatch = text.match(/\{[\s\S]*\}/)
-    if (!jsonMatch) {
-      throw new Error('No JSON found in response')
+  })) as {
+    response: {
+      tags: { name: string; isNew?: boolean }[]
+      type: string
     }
-    const parsed = JSON.parse(jsonMatch[0])
-
-    // Validate and sanitize
-    const existingTagSet = new Set(existingTags.map((t) => t.toLowerCase()))
-    const bookmarkTypeSet = new Set(
-      BOOKMARK_TYPES.map((type) => type.toLowerCase()),
-    )
-    const tags = Array.isArray(parsed.tags)
-      ? parsed.tags
-          .slice(0, 5)
-          .filter(
-            (t: unknown) =>
-              t &&
-              typeof t === 'object' &&
-              'name' in (t as Record<string, unknown>) &&
-              typeof (t as Record<string, string>).name === 'string' &&
-              !(t as Record<string, string>).name.startsWith('like:') &&
-              !bookmarkTypeSet.has(
-                (t as Record<string, string>).name.toLowerCase(),
-              ),
-          )
-          .map((t: { name: string }) => ({
-            isNew: !existingTagSet.has(t.name.toLowerCase()),
-            name: t.name,
-          }))
-      : []
-
-    const type = BOOKMARK_TYPES.includes(parsed.type)
-      ? parsed.type
-      : normalizedCurrentType
-
-    return { tags, type }
-  } catch {
-    return { tags: [], type: normalizedCurrentType }
   }
+
+  const existingTagSet = new Set(existingTags.map((t) => t.toLowerCase()))
+  const bookmarkTypeSet = new Set(
+    BOOKMARK_TYPES.map((t) => t.toLowerCase()),
+  )
+
+  const tags = Array.isArray(response?.tags)
+    ? response.tags
+        .slice(0, 5)
+        .filter(
+          (t) =>
+            t &&
+            typeof t.name === 'string' &&
+            !t.name.startsWith('like:') &&
+            !bookmarkTypeSet.has(t.name.toLowerCase()),
+        )
+        .map((t) => ({
+          isNew: !existingTagSet.has(t.name.toLowerCase()),
+          name: t.name,
+        }))
+    : []
+
+  const type = BOOKMARK_TYPES.includes(
+    response?.type as (typeof BOOKMARK_TYPES)[number],
+  )
+    ? response.type
+    : normalizedCurrentType
+
+  return { tags, type }
 }
