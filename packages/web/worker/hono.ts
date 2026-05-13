@@ -46,6 +46,7 @@ import {
   getTags,
   renameTag,
 } from './meta'
+import { dbMiddleware } from './middleware/db'
 import { getCurrentProfile, updateCurrentProfile } from './profile'
 import { feedToJson } from './rss/rss-to-json'
 import { handleScrapeContent } from './scraper/scrape-content'
@@ -62,12 +63,84 @@ import { sendToots } from './toots/sendToots'
 
 export const api = new Hono<{ Bindings: WorkerEnv }>()
 
+// Routes that do not touch the database — declared before dbMiddleware
+// so they skip the per-request Postgres connection.
 api.get('/', (c) => {
   return c.text('Otter API', 200)
 })
+api.get('/scrape', async (c) => {
+  return await handleScrapeContent(c.req)
+})
+api.get('/scrape-content', async (c) => {
+  return await handleScrapeContent(c.req)
+})
+api.post('/ai/title', async (context) => {
+  const { prompt } = await context.req.json()
+  return await generateResponse({
+    context,
+    prompt,
+    systemPrompt: titleSystemPrompt,
+  })
+})
+api.post('/ai/description', async (context) => {
+  const { title, prompt } = await context.req.json()
+  return await generateResponse({
+    context,
+    prompt,
+    systemPrompt: descriptionSystemPrompt(title),
+  })
+})
+api.post('/ai/summarise', async (context) => {
+  const { prompt } = await context.req.json()
+  const truncated = prompt.slice(0, MAX_CONTENT_LENGTH)
+  return await generateResponse({
+    context,
+    prompt: truncated,
+    systemPrompt: summariseSystemPrompt,
+  })
+})
+api.post('/ai/classify', async (context) => {
+  const { title, description, url, tags, currentType } =
+    await context.req.json()
+  const result = await classifyBookmark({
+    context,
+    currentType: currentType ?? 'link',
+    description: description ?? '',
+    existingTags: tags ?? [],
+    title: title ?? '',
+    url: url ?? '',
+  })
+  return context.json(result)
+})
+api.get('/rss', async (c) => {
+  const feed = c.req.query('feed')
+  let isValidUrl = false
+  if (feed) {
+    try {
+      new URL(feed)
+      isValidUrl = true
+    } catch {
+      isValidUrl = false
+    }
+  }
 
-api.on(["GET", "POST"], '/auth/*', async (c) => {
-  return await createAuth(c.env).handler(c.req.raw)
+  if (isValidUrl && feed) {
+    const jsonFeed = await feedToJson(feed)
+    return c.json(jsonFeed)
+  }
+
+  return c.json(
+    {
+      error: 'Feed not found',
+    },
+    404,
+  )
+})
+
+api.use('*', dbMiddleware)
+
+api.on(['GET', 'POST'], '/auth/*', async (c) => {
+  return await createAuth(c.env, c.var.db).handler(c.req.raw)
 })
 api.get('/me', async (c) => {
   return await getCurrentProfile(c)
@@ -104,7 +177,7 @@ api.get('/check-url', async (c) => {
   return await checkBookmarkUrl(c)
 })
 api.get('/recent', async (c) => {
-  return await getRecentPublicBookmarks(c.req, c.env)
+  return await getRecentPublicBookmarks(c)
 })
 api.get('/search', async (c) => {
   return await getSearch(c)
@@ -178,50 +251,6 @@ api.post('/toot', async (c) => {
 api.post('/bluesky', async (c) => {
   return await sendBlueskyPost(c)
 })
-api.get('/scrape', async (c) => {
-  return await handleScrapeContent(c.req)
-})
-api.get('/scrape-content', async (c) => {
-  return await handleScrapeContent(c.req)
-})
-api.post('/ai/title', async (context) => {
-  const { prompt } = await context.req.json()
-  return await generateResponse({
-    context,
-    prompt,
-    systemPrompt: titleSystemPrompt,
-  })
-})
-api.post('/ai/description', async (context) => {
-  const { title, prompt } = await context.req.json()
-  return await generateResponse({
-    context,
-    prompt,
-    systemPrompt: descriptionSystemPrompt(title),
-  })
-})
-api.post('/ai/summarise', async (context) => {
-  const { prompt } = await context.req.json()
-  const truncated = prompt.slice(0, MAX_CONTENT_LENGTH)
-  return await generateResponse({
-    context,
-    prompt: truncated,
-    systemPrompt: summariseSystemPrompt,
-  })
-})
-api.post('/ai/classify', async (context) => {
-  const { title, description, url, tags, currentType } =
-    await context.req.json()
-  const result = await classifyBookmark({
-    context,
-    currentType: currentType ?? 'link',
-    description: description ?? '',
-    existingTags: tags ?? [],
-    title: title ?? '',
-    url: url ?? '',
-  })
-  return context.json(result)
-})
 api.post('/mcp', async (c) => {
   return await handleMcpPost(c)
 })
@@ -234,30 +263,15 @@ api.delete('/mcp', (c) => {
 api.options('/mcp', (c) => {
   return handleMcpOptions(c)
 })
-api.get('/rss', async (c) => {
-  const feed = c.req.query('feed')
-  const isValidUrl = new URL(feed ?? '')
-
-  if (isValidUrl && feed) {
-    const jsonFeed = await feedToJson(feed)
-    return c.json(jsonFeed)
-  }
-
-  return c.json(
-    {
-      error: 'Feed not found',
-    },
-    404,
-  )
-})
 
 export const app = new Hono<{ Bindings: WorkerEnv }>()
 
+app.use('/.well-known/*', dbMiddleware)
 app.all('/.well-known/oauth-authorization-server/api/auth', async (c) => {
-  return await createAuth(c.env).handler(c.req.raw)
+  return await createAuth(c.env, c.var.db).handler(c.req.raw)
 })
 app.all('/.well-known/openid-configuration/api/auth', async (c) => {
-  return await createAuth(c.env).handler(c.req.raw)
+  return await createAuth(c.env, c.var.db).handler(c.req.raw)
 })
 app.route('/api', api)
 
