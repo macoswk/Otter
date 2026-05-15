@@ -48,6 +48,12 @@ import {
 } from './meta'
 import { dbMiddleware } from './middleware/db'
 import { getCurrentProfile, updateCurrentProfile } from './profile'
+import {
+  createOrRotateShare,
+  deleteShare,
+  getPublicShare,
+  listShares,
+} from './shares'
 import { feedToJson } from './rss/rss-to-json'
 import { handleScrapeContent } from './scraper/scrape-content'
 import { getSearch } from './search/search'
@@ -235,6 +241,18 @@ api.get('/collections-tags', async (c) => {
 })
 api.get('/collections/:collection', async (c) => {
   return await getCollectionBookmarks(c)
+})
+api.get('/shares', async (c) => {
+  return await listShares(c)
+})
+api.post('/shares', async (c) => {
+  return await createOrRotateShare(c)
+})
+api.delete('/shares', async (c) => {
+  return await deleteShare(c)
+})
+api.get('/share/:token', async (c) => {
+  return await getPublicShare(c)
 })
 api.get('/integrations/bluesky', async (c) => {
   return await getBlueskyIntegration(c)

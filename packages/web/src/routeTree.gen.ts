@@ -15,6 +15,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AppRouteRouteImport } from './routes/_app/route'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as ShareTokenRouteImport } from './routes/share.$token'
 import { Route as AppTweetsRouteImport } from './routes/_app/tweets'
 import { Route as AppTrashRouteImport } from './routes/_app/trash'
 import { Route as AppTopRouteImport } from './routes/_app/top'
@@ -70,6 +71,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRouteRoute,
+} as any)
+const ShareTokenRoute = ShareTokenRouteImport.update({
+  id: '/share/$token',
+  path: '/share/$token',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppTweetsRoute = AppTweetsRouteImport.update({
   id: '/tweets',
@@ -226,6 +232,7 @@ export interface FileRoutesByFullPath {
   '/top': typeof AppTopRoute
   '/trash': typeof AppTrashRoute
   '/tweets': typeof AppTweetsRoute
+  '/share/$token': typeof ShareTokenRoute
   '/bookmark/$id': typeof AppBookmarkIdRouteWithChildren
   '/collection/$collection': typeof AppCollectionCollectionRoute
   '/new/bookmark': typeof AppNewBookmarkRouteWithChildren
@@ -259,6 +266,7 @@ export interface FileRoutesByTo {
   '/top': typeof AppTopRoute
   '/trash': typeof AppTrashRoute
   '/tweets': typeof AppTweetsRoute
+  '/share/$token': typeof ShareTokenRoute
   '/bookmark/$id': typeof AppBookmarkIdRouteWithChildren
   '/collection/$collection': typeof AppCollectionCollectionRoute
   '/new/bookmark': typeof AppNewBookmarkRouteWithChildren
@@ -294,6 +302,7 @@ export interface FileRoutesById {
   '/_app/top': typeof AppTopRoute
   '/_app/trash': typeof AppTrashRoute
   '/_app/tweets': typeof AppTweetsRoute
+  '/share/$token': typeof ShareTokenRoute
   '/_public/': typeof PublicIndexRoute
   '/_app/bookmark/$id': typeof AppBookmarkIdRouteWithChildren
   '/_app/collection/$collection': typeof AppCollectionCollectionRoute
@@ -330,6 +339,7 @@ export interface FileRouteTypes {
     | '/top'
     | '/trash'
     | '/tweets'
+    | '/share/$token'
     | '/bookmark/$id'
     | '/collection/$collection'
     | '/new/bookmark'
@@ -363,6 +373,7 @@ export interface FileRouteTypes {
     | '/top'
     | '/trash'
     | '/tweets'
+    | '/share/$token'
     | '/bookmark/$id'
     | '/collection/$collection'
     | '/new/bookmark'
@@ -397,6 +408,7 @@ export interface FileRouteTypes {
     | '/_app/top'
     | '/_app/trash'
     | '/_app/tweets'
+    | '/share/$token'
     | '/_public/'
     | '/_app/bookmark/$id'
     | '/_app/collection/$collection'
@@ -422,6 +434,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   RecentRoute: typeof RecentRoute
   TermsRoute: typeof TermsRoute
+  ShareTokenRoute: typeof ShareTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -467,6 +480,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRouteRoute
+    }
+    '/share/$token': {
+      id: '/share/$token'
+      path: '/share/$token'
+      fullPath: '/share/$token'
+      preLoaderRoute: typeof ShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_app/tweets': {
       id: '/_app/tweets'
@@ -771,6 +791,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   RecentRoute: RecentRoute,
   TermsRoute: TermsRoute,
+  ShareTokenRoute: ShareTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

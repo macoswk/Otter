@@ -52,6 +52,7 @@ function Page() {
       hasNextPage={hasNextPage}
       isFetchingNextPage={isFetchingNextPage}
       fetchNextPage={fetchNextPage}
+      shareConfig={{ kind: 'collection', name: collection }}
     />
   )
 }

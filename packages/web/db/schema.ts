@@ -51,6 +51,8 @@ export const mediaTypeEnum = pgEnum('media_type', [
 
 export const bookmarkStatusEnum = pgEnum('status', ['active', 'inactive'])
 
+export const shareKindEnum = pgEnum('share_kind', ['tag', 'collection'])
+
 export const bookmarkTypeEnum = pgEnum('type', [
   'link',
   'video',
@@ -449,6 +451,34 @@ export const tweets = pgTable(
     userName: text('user_name'),
   },
   (table) => [index('tweets_db_user_id_idx').on(table.dbUserId)],
+)
+
+export const shares = pgTable(
+  'shares',
+  {
+    createdAt: timestamp('created_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    id: uuid('id').primaryKey().defaultRandom(),
+    kind: shareKindEnum('kind').notNull(),
+    name: text('name').notNull(),
+    token: text('token').notNull(),
+    updatedAt: timestamp('updated_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    userId: uuid('user_id')
+      .notNull()
+      .references(() => authUsers.id, { onDelete: 'cascade' }),
+  },
+  (table) => [
+    uniqueIndex('shares_token_key').on(table.token),
+    uniqueIndex('shares_user_kind_name_key').on(
+      table.userId,
+      table.kind,
+      table.name,
+    ),
+    index('shares_user_id_idx').on(table.userId),
+  ],
 )
 
 export const userIntegrations = pgTable('user_integrations', {

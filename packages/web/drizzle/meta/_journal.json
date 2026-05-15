@@ -7,6 +7,13 @@
       "tag": "0000_initial_schema",
       "version": "7",
       "when": 1777634775266
+    },
+    {
+      "breakpoints": true,
+      "idx": 1,
+      "tag": "0001_shares",
+      "version": "7",
+      "when": 1778500000000
     }
   ],
   "version": "7"

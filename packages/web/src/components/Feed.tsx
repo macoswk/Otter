@@ -9,12 +9,14 @@ import { useFeedOptions } from '@/hooks/useFeedOptions'
 import { type FeedItemModel, useGroupByDate } from '@/hooks/useGroupByDate'
 import { useInfiniteScroll } from '@/hooks/useInfiniteScroll'
 import { getCollectionsTagsOptions } from '@/utils/fetching/collections'
+import type { ShareKind } from '@/utils/fetching/shares'
 import type { Bookmark, Toot, Tweet } from '../types/db'
 import { cn } from '../utils/classnames'
 import { BookmarkFeedItem } from './BookmarkFeedItem'
 import { Flex } from './Flex'
 import { headingVariants } from './Heading'
 import { Loader } from './Loader'
+import { ShareDialog } from './ShareDialog'
 import { SidebarLink } from './SidebarLink'
 import { TootFeedItem } from './TootFeedItem'
 import { TweetFeedItem } from './TweetFeedItem'
@@ -39,6 +41,7 @@ interface FeedProps {
   hasNextPage?: boolean
   isFetchingNextPage?: boolean
   fetchNextPage?: () => void
+  shareConfig?: { kind: ShareKind; name: string }
 }
 
 export function isBookmark(item: FeedItemModel): item is Bookmark {
@@ -66,6 +69,7 @@ export const Feed = memo(
     hasNextPage = false,
     isFetchingNextPage = false,
     fetchNextPage,
+    shareConfig,
   }: FeedProps) => {
     const { starQuery, publicQuery, setStarQuery, setPublicQuery } =
       useFeedOptions()
@@ -103,29 +107,42 @@ export const Feed = memo(
               {icon}
               {title}
             </h3>
-            {showFeedOptions ? (
+            {showFeedOptions || shareConfig ? (
               <Flex gap="3xs">
-                <Button
-                  onClick={() => handleToggleState('star')}
-                  size="xs"
-                  variant="ghost"
-                  aria-pressed={starQuery}
-                >
-                  <StarIcon size={16} weight={starQuery ? 'fill' : 'duotone'} />{' '}
-                  Stars
-                </Button>
-                <Button
-                  onClick={() => handleToggleState('public')}
-                  size="xs"
-                  variant="ghost"
-                  aria-pressed={publicQuery}
-                >
-                  <EyeIcon
-                    size={16}
-                    weight={publicQuery ? 'fill' : 'duotone'}
-                  />{' '}
-                  Public
-                </Button>
+                {showFeedOptions ? (
+                  <>
+                    <Button
+                      onClick={() => handleToggleState('star')}
+                      size="xs"
+                      variant="ghost"
+                      aria-pressed={starQuery}
+                    >
+                      <StarIcon
+                        size={16}
+                        weight={starQuery ? 'fill' : 'duotone'}
+                      />{' '}
+                      Stars
+                    </Button>
+                    <Button
+                      onClick={() => handleToggleState('public')}
+                      size="xs"
+                      variant="ghost"
+                      aria-pressed={publicQuery}
+                    >
+                      <EyeIcon
+                        size={16}
+                        weight={publicQuery ? 'fill' : 'duotone'}
+                      />{' '}
+                      Public
+                    </Button>
+                  </>
+                ) : null}
+                {shareConfig ? (
+                  <ShareDialog
+                    kind={shareConfig.kind}
+                    name={shareConfig.name}
+                  />
+                ) : null}
               </Flex>
             ) : null}
           </Flex>

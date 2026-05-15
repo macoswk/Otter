@@ -44,6 +44,7 @@ function Page() {
       hasNextPage={hasNextPage}
       isFetchingNextPage={isFetchingNextPage}
       fetchNextPage={fetchNextPage}
+      shareConfig={tag === 'Untagged' ? undefined : { kind: 'tag', name: tag }}
     />
   )
 }
